@@ -1,0 +1,11 @@
+{
+  "config_flow": true,
+  "domain": "taipower_tw",
+  "name": "Taipower TW",
+  "version": "0.0.1",
+  "documentation": "https://github.com/qqaatw/taipowerha",
+  "issue_tracker": "https://github.com/qqaatw/taipowerha/issues",
+  "requirements": ["libtaipower==0.0.1"],
+  "codeowners": ["@qqaatw"],
+  "iot_class": "cloud_polling"
+}

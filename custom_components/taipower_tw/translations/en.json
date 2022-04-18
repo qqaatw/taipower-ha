@@ -1,0 +1,31 @@
+{
+    "config": {
+        "flow_title": "Taipower TW",
+        "step": {
+            "user": {
+                "data": {
+                    "account": "Taipower Account (phone number)",
+                    "password": "Taipower Password",
+                    "retry": "Number of retries when command sending fails",
+                    "devices": "Electric number (Leave blank to automatically retrieve from the API)",
+                    "ami_period": "AMI data period (`hourly`, `daily`, `monthly`, `quarter`)",
+                    "add_another_meter": "Add another meter?"
+                }
+            },
+            "add_meter": {
+                "data": {
+                    "devices": "Electric number",
+                    "add_another_meter": "Add another meter?"
+                }
+            }
+        },
+        "error": {
+            "assertion_check_error": "The meter(s) you specified is/are not available from the API.",
+            "login_error": "Incorrect account or password.",
+            "unknown_error": "Unknown error occurred."
+        },
+        "abort": {
+            "already_configured": "Meter already configured"
+        }
+    }
+}
