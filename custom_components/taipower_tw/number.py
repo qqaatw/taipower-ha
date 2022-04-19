@@ -3,8 +3,7 @@ import logging
 
 from homeassistant.components.number import NumberEntity
 
-from . import API, COORDINATOR, DOMAIN, TaipowerEntity
-from .const import MONTH_KEY, AMI_KEY
+from . import API, AMI_KEY, COORDINATOR, DOMAIN, TaipowerEntity, MONTH_KEY
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -96,12 +95,12 @@ class TaipowerAMISelectorNumberEntity(TaipowerEntity, NumberEntity):
 
     @property
     def min_value(self):
-        """Return the minimum month."""
+        """Return the minimum value."""
         return 0
 
     @property
     def max_value(self):
-        """Return the maximum month."""
+        """Return the maximum value."""
         return len(self._meter.ami) - 1 if self._meter.ami is not None else 0
 
     @property
@@ -109,7 +108,7 @@ class TaipowerAMISelectorNumberEntity(TaipowerEntity, NumberEntity):
         return f"{self._meter.number}_ami_selector_number"
 
     def set_value(self, value):
-        """Set new month."""
+        """Set new value."""
         value = int(value)
         _LOGGER.debug(f"Set {self.name} value to {value}")
         self._value = value

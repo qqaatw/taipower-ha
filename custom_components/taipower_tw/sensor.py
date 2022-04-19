@@ -3,20 +3,13 @@ import datetime
 import logging
 
 from homeassistant.components.sensor import (STATE_CLASS_MEASUREMENT,
-                                             STATE_CLASS_TOTAL_INCREASING,
                                              SensorEntity)
 from homeassistant.const import (DEVICE_CLASS_DATE, DEVICE_CLASS_ENERGY,
-                                 DEVICE_CLASS_HUMIDITY, DEVICE_CLASS_PM25,
-                                 ENERGY_KILO_WATT_HOUR, PERCENTAGE, DEVICE_CLASS_MONETARY)
+                                 DEVICE_CLASS_MONETARY, ENERGY_KILO_WATT_HOUR)
 
-from . import API, COORDINATOR, DOMAIN, TaipowerEntity
-from .const import MONTH_KEY, AMI_KEY
+from . import API, COORDINATOR, DOMAIN, TaipowerEntity, AMI_KEY, MONTH_KEY
 
 _LOGGER = logging.getLogger(__name__)
-
-ODOR_LEVEL_LOW = "Low"
-ODOR_LEVEL_MIDDLE = "Middle"
-ODOR_LEVEL_HIGH = "High"
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -301,7 +294,7 @@ class TaipowerAMIStartTimeIndicatorSensorEntity(TaipowerEntity, SensorEntity):
         """Return the date and time in yyyy-mm-dd-hh format."""
         value = self.native_value
         if value is not None:
-            return self.native_value.strftime("%Y-%m-%d-%H")
+            return self.native_value.strftime("%Y-%m-%d-%H-%M-%S")
         return None
         
     @property
@@ -337,7 +330,7 @@ class TaipowerAMIEndTimeIndicatorSensorEntity(TaipowerEntity, SensorEntity):
         """Return the date and time in yyyy-mm-dd-hh format."""
         value = self.native_value
         if value is not None:
-            return self.native_value.strftime("%Y-%m-%d-%H")
+            return self.native_value.strftime("%Y-%m-%d-%H-%M-%S")
         return None
         
     @property
@@ -392,7 +385,7 @@ class TaipowerMonthlyChargeSensorEntity(TaipowerEntity, SensorEntity):
     @property
     def name(self):
         """Return the name of the entity."""
-        return f"{self._meter.name} {self._meter.number} Monthly Charge"
+        return f"{self._meter.name} {self._meter.number} Charge"
     
     @property
     def state(self):
@@ -406,11 +399,6 @@ class TaipowerMonthlyChargeSensorEntity(TaipowerEntity, SensorEntity):
     def device_class(self):
         """Return the device class."""
         return DEVICE_CLASS_MONETARY
-
-    #@property
-    #def unit_of_measurement(self):
-    #    """Return the unit of measurement."""
-    #    return ENERGY_KILO_WATT_HOUR
 
     @property
     def unique_id(self):
@@ -428,7 +416,7 @@ class TaipowerMonthlyFormulaSensorEntity(TaipowerEntity, SensorEntity):
     @property
     def name(self):
         """Return the name of the entity."""
-        return f"{self._meter.name} {self._meter.number} Monthly Charge"
+        return f"{self._meter.name} {self._meter.number} Charge Formula"
     
     @property
     def state(self):
@@ -442,11 +430,6 @@ class TaipowerMonthlyFormulaSensorEntity(TaipowerEntity, SensorEntity):
     def device_class(self):
         """Return the device class."""
         return DEVICE_CLASS_MONETARY
-
-    #@property
-    #def unit_of_measurement(self):
-    #    """Return the unit of measurement."""
-    #    return ENERGY_KILO_WATT_HOUR
 
     @property
     def unique_id(self):

@@ -11,21 +11,31 @@ from homeassistant.helpers.update_coordinator import (CoordinatorEntity,
                                                       DataUpdateCoordinator,
                                                       UpdateFailed)
 
-from .const import (API, AMI_KEY, CONF_DEVICES, CONF_ACCOUNT, CONF_PASSWORD, CONF_RETRY,
-                    CONFIG_SCHEMA, COORDINATOR, DOMAIN, MONTH_KEY, CONF_AMI_PERIOD,)
+from .const import (AMI_KEY, API, CONF_ACCOUNT, CONF_AMI_PERIOD, CONF_DEVICES,
+                    CONF_PASSWORD, CONF_RETRY, CONFIG_SCHEMA, COORDINATOR,
+                    DOMAIN, MONTH_KEY)
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = ["number", "sensor"]
-DATA_UPDATE_INTERVAL = timedelta(minutes=15)
+DATA_UPDATE_INTERVAL = timedelta(minutes=30)
 BASE_TIMEOUT = 5
 
 from Taipower.api import TaipowerAPI
+
 
 async def async_setup(hass, config):
     """Set up from the configuration.yaml"""
     if config.get(DOMAIN, None) is None:
         # skip if no config defined in configuration.yaml"""
         return True
+    
+    # translate correct words to typos, thanks to Taipower ^U^.
+    if CONF_AMI_PERIOD in config[DOMAIN]:
+        if config[DOMAIN][CONF_AMI_PERIOD] == "hourly":
+            config[DOMAIN][CONF_AMI_PERIOD] = "hour"
+        elif config[DOMAIN][CONF_AMI_PERIOD] == "quarter":
+            config[DOMAIN][CONF_AMI_PERIOD] = "quater"
+
     _LOGGER.debug(
         {
             "CONF_ACCOUNT": config[DOMAIN].get(CONF_ACCOUNT),
@@ -237,37 +247,8 @@ class TaipowerEntity(CoordinatorEntity):
         """Return the entity's unique id."""
         raise NotImplementedError
     
-    
-    #def put_queue(self, status_name, status_value=None):
-    #    """Put data into the queue to update status"""
-    #    self.hass.data[DOMAIN][UPDATE_DATA].put(
-    #        UpdateData(
-    #            status_name=status_name,
-    #            status_value=status_value,
-    #            electric_number=self._meter.number,                
-    #        )
-    #    )
-    
     def update(self):
         """Update latest status"""
-        
-        #api = self.hass.data[DOMAIN][API]
-
-        #while self.hass.data[DOMAIN][UPDATE_DATA].qsize() > 0:
-        #    data = self.hass.data[DOMAIN][UPDATE_DATA].get()
-        #    _LOGGER.debug(f"Updating data: {data}")
-        #    result = api.refresh_status(**vars(data))
-        #    if result is True:
-        #        _LOGGER.debug(f"Data: {data} updated successfully.")
-        #    else:
-        #        _LOGGER.error("Failed to update data.")
-
-        # Here we don't need to refresh status as it was refreshed by `api.set_status`.
-        #self.hass.data[DOMAIN][UPDATED_DATA] = api.get_status()
-        
-        #_LOGGER.debug(
-        #    f"Latest data: {[(name, value.status) for name, value in self.hass.data[DOMAIN][UPDATED_DATA].items()]}"
-        #)
-        
-        # Important: We have to reset the update scheduler to prevent old status from wrongly being loaded. 
-        self.coordinator.async_set_updated_data(None)
+        _LOGGER.debug(f"Manually writing new states to entities.")
+        for update_callback in self.coordinator._listeners:
+            update_callback()

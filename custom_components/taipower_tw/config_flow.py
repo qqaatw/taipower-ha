@@ -3,12 +3,14 @@ import logging
 
 from homeassistant import config_entries
 
-from .const import (CONF_ADD_ANOTHER_METER, CONF_RETRY, CONF_AMI_PERIOD,
-                    CONFIG_FLOW_ADD_METER_SCHEMA, CONFIG_FLOW_SCHEMA, DOMAIN, CONF_DEVICES, CONF_ACCOUNT, CONF_PASSWORD)
+from .const import (CONF_ACCOUNT, CONF_ADD_ANOTHER_METER, CONF_AMI_PERIOD,
+                    CONF_DEVICES, CONF_PASSWORD, CONF_RETRY,
+                    CONFIG_FLOW_ADD_METER_SCHEMA, CONFIG_FLOW_SCHEMA, DOMAIN)
 
 _LOGGER = logging.getLogger(__name__)
 
 from Taipower.api import TaipowerAPI
+
 
 async def validate_auth(hass, account, password, electric_numbers, ami_period, max_retries) -> None:
     """Validates Taipower account and meters."""

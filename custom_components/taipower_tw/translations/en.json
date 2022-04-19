@@ -8,7 +8,7 @@
                     "password": "Taipower Password",
                     "retry": "Number of retries when command sending fails",
                     "devices": "Electric number (Leave blank to automatically retrieve from the API)",
-                    "ami_period": "AMI data period (`hourly`, `daily`, `monthly`, `quarter`)",
+                    "ami_period": "AMI data period (`quarter`, `hourly`, `daily`, `monthly`)",
                     "add_another_meter": "Add another meter?"
                 }
             },

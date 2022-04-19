@@ -12,9 +12,9 @@ script: !include scripts.yaml
 scene: !include scenes.yaml
 
 taipower_tw:
-  email: yourname@yourdomain.com
+  account: 0987654321
   password: password
   devices:
     - ELECTRIC_NUMBER_A
     - ELECTRIC_NUMBER_B
-  ami_period: daily
+  ami_period: daily  # available options: `quarter`, `hourly, `daily`, `monthly`.
