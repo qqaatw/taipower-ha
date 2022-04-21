@@ -1,6 +1,7 @@
 """Taipower integration."""
 import asyncio
 import logging
+import functools
 from dataclasses import dataclass, field
 from datetime import timedelta
 from typing import Optional
@@ -85,7 +86,7 @@ async def async_setup(hass, config):
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
             async with async_timeout.timeout(BASE_TIMEOUT + len(api.meters) * 2):
-                await hass.async_add_executor_job(api.refresh_status)
+                await hass.async_add_executor_job(functools.partial(api.refresh_status, refresh_ami_bill=False))
 
         except asyncio.TimeoutError as err:
             raise UpdateFailed(f"Command executed timed out when regularly fetching data.")
@@ -172,7 +173,7 @@ async def async_setup_entry(hass, config_entry):
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
             async with async_timeout.timeout(BASE_TIMEOUT + len(api.meters) * 2):
-                await hass.async_add_executor_job(api.refresh_status)
+                await hass.async_add_executor_job(functools.partial(api.refresh_status, refresh_ami_bill=False))
 
         except asyncio.TimeoutError as err:
             raise UpdateFailed(f"Command executed timed out when regularly fetching data.")

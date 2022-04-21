@@ -29,13 +29,12 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                     TaipowerAMITotalKwhSensorEntity(meter, coordinator),
                     TaipowerAMIStartTimeIndicatorSensorEntity(meter, coordinator),
                     TaipowerAMIEndTimeIndicatorSensorEntity(meter, coordinator),
-                    TaipowerChargePeriodSensorEntity(meter, coordinator),
-                    TaipowerMonthlyChargeSensorEntity(meter, coordinator),
-                    TaipowerMonthlyFormulaSensorEntity(meter, coordinator),
-                    TaipowerMonthlyKwhSensorEntity(meter, coordinator),
-                    TaipowerMonthIndicatorSensorEntity(meter, coordinator),
+                    TaipowerBillChargePeriodSensorEntity(meter, coordinator),
+                    TaipowerBillChargeSensorEntity(meter, coordinator),
+                    TaipowerBillFormulaSensorEntity(meter, coordinator),
+                    TaipowerBillKwhSensorEntity(meter, coordinator),
+                    TaipowerBillMonthIndicatorSensorEntity(meter, coordinator),
                 ],
-                update_before_add=True
             )
 
 
@@ -56,13 +55,13 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
                     TaipowerAMITotalKwhSensorEntity(meter, coordinator),
                     TaipowerAMIStartTimeIndicatorSensorEntity(meter, coordinator),
                     TaipowerAMIEndTimeIndicatorSensorEntity(meter, coordinator),
-                    TaipowerChargePeriodSensorEntity(meter, coordinator),
-                    TaipowerMonthlyChargeSensorEntity(meter, coordinator),
-                    TaipowerMonthlyFormulaSensorEntity(meter, coordinator),
-                    TaipowerMonthlyKwhSensorEntity(meter, coordinator),
-                    TaipowerMonthIndicatorSensorEntity(meter, coordinator),
+                    TaipowerBillChargePeriodSensorEntity(meter, coordinator),
+                    TaipowerBillChargeSensorEntity(meter, coordinator),
+                    TaipowerBillFormulaSensorEntity(meter, coordinator),
+                    TaipowerBillKwhSensorEntity(meter, coordinator),
+                    TaipowerBillMonthIndicatorSensorEntity(meter, coordinator),
                 ],
-                update_before_add=True)
+            )
 
 
 class TaipowerAMIOffPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
@@ -83,11 +82,11 @@ class TaipowerAMIOffPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def state(self):
-        """Return the ami off-peak KW/H"""
+        """Return the ami off-peak KW/H."""
         ami_key = self.hass.data[DOMAIN][AMI_KEY]
         if self._meter.ami is not None and ami_key in self._meter.ami:
             return self._meter.ami[ami_key].offpeak_kwh
-        return -1
+        return None
 
     @property
     def device_class(self):
@@ -101,7 +100,7 @@ class TaipowerAMIOffPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return f"{self._meter.number}_daily_offpeak_kwh_sensor"
+        return f"{self._meter.number}_ami_offpeak_kwh_sensor"
     
     @property
     def state_class(self):
@@ -126,11 +125,11 @@ class TaipowerAMIHalfPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def state(self):
-        """Return the ami half-peak KW/H"""
+        """Return the ami half-peak KW/H."""
         ami_key = self.hass.data[DOMAIN][AMI_KEY]
         if self._meter.ami is not None and ami_key in self._meter.ami:
             return self._meter.ami[ami_key].halfpeak_kwh
-        return -1
+        return None
 
     @property
     def device_class(self):
@@ -144,7 +143,7 @@ class TaipowerAMIHalfPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return f"{self._meter.number}_daily_halfpeak_kwh_sensor"
+        return f"{self._meter.number}_ami_halfpeak_kwh_sensor"
     
     @property
     def state_class(self):
@@ -169,11 +168,11 @@ class TaipowerAMISatPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def state(self):
-        """Return the ami saturday half-peak KW/H"""
+        """Return the ami saturday half-peak KW/H."""
         ami_key = self.hass.data[DOMAIN][AMI_KEY]
         if self._meter.ami is not None and ami_key in self._meter.ami:
             return self._meter.ami[ami_key].satpeak_kwh
-        return -1
+        return None
 
     @property
     def device_class(self):
@@ -187,7 +186,7 @@ class TaipowerAMISatPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return f"{self._meter.number}_daily_satpeak_kwh_sensor"
+        return f"{self._meter.number}_ami_satpeak_kwh_sensor"
     
     @property
     def state_class(self):
@@ -212,11 +211,11 @@ class TaipowerAMIPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def state(self):
-        """Return the ami peak KW/H"""
+        """Return the ami peak KW/H."""
         ami_key = self.hass.data[DOMAIN][AMI_KEY]
         if self._meter.ami is not None and ami_key in self._meter.ami:
             return self._meter.ami[ami_key].peak_kwh
-        return -1
+        return None
 
     @property
     def device_class(self):
@@ -230,7 +229,7 @@ class TaipowerAMIPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return f"{self._meter.number}_daily_peak_kwh_sensor"
+        return f"{self._meter.number}_ami_peak_kwh_sensor"
     
     @property
     def state_class(self):
@@ -255,11 +254,11 @@ class TaipowerAMITotalKwhSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def state(self):
-        """Return the ami total KW/H"""
+        """Return the ami total KW/H."""
         ami_key = self.hass.data[DOMAIN][AMI_KEY]
         if self._meter.ami is not None and ami_key in self._meter.ami:
             return self._meter.ami[ami_key].total_kwh
-        return -1
+        return None
 
     @property
     def device_class(self):
@@ -273,7 +272,7 @@ class TaipowerAMITotalKwhSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return f"{self._meter.number}_daily_total_kwh_sensor"
+        return f"{self._meter.number}_ami_total_kwh_sensor"
     
     @property
     def state_class(self):
@@ -352,48 +351,48 @@ class TaipowerAMIEndTimeIndicatorSensorEntity(TaipowerEntity, SensorEntity):
         return f"{self._meter.number}_ami_end_time_indicator_sensor"
 
 
-class TaipowerChargePeriodSensorEntity(TaipowerEntity, SensorEntity):
+class TaipowerBillChargePeriodSensorEntity(TaipowerEntity, SensorEntity):
     def __init__(self, meter, coordinator):
         super().__init__(meter, coordinator)
     
     @property
     def name(self):
         """Return the name of the entity."""
-        return f"{self._meter.name} {self._meter.number} Charge Period"
+        return f"{self._meter.name} {self._meter.number} Bill Charge Period"
     
     @property
     def state(self):
-        """Return the monthly charge"""
+        """Return the bill charge period."""
         month_key = self.hass.data[DOMAIN][MONTH_KEY]
         if self._meter.bill_records is not None and month_key in self._meter.bill_records:
             return self._meter.bill_records[month_key].period
-        return -1
+        return None
 
     @property
     def unique_id(self):
-        return f"{self._meter.number}_monthly_charge_period_sensor"
+        return f"{self._meter.number}_bill_charge_period_sensor"
     
     @property
     def state_class(self):
         return STATE_CLASS_MEASUREMENT
 
 
-class TaipowerMonthlyChargeSensorEntity(TaipowerEntity, SensorEntity):
+class TaipowerBillChargeSensorEntity(TaipowerEntity, SensorEntity):
     def __init__(self, meter, coordinator):
         super().__init__(meter, coordinator)
     
     @property
     def name(self):
         """Return the name of the entity."""
-        return f"{self._meter.name} {self._meter.number} Charge"
+        return f"{self._meter.name} {self._meter.number} Bill Charge"
     
     @property
     def state(self):
-        """Return the monthly charge"""
+        """Return the bill charge."""
         month_key = self.hass.data[DOMAIN][MONTH_KEY]
         if self._meter.bill_records is not None and month_key in self._meter.bill_records:
             return self._meter.bill_records[month_key].charge
-        return -1
+        return None
 
     @property
     def device_class(self):
@@ -402,29 +401,29 @@ class TaipowerMonthlyChargeSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return f"{self._meter.number}_monthly_charge_sensor"
+        return f"{self._meter.number}_bill_charge_sensor"
     
     @property
     def state_class(self):
         return STATE_CLASS_MEASUREMENT
 
 
-class TaipowerMonthlyFormulaSensorEntity(TaipowerEntity, SensorEntity):
+class TaipowerBillFormulaSensorEntity(TaipowerEntity, SensorEntity):
     def __init__(self, meter, coordinator):
         super().__init__(meter, coordinator)
     
     @property
     def name(self):
         """Return the name of the entity."""
-        return f"{self._meter.name} {self._meter.number} Charge Formula"
+        return f"{self._meter.name} {self._meter.number} Bill Formula"
     
     @property
     def state(self):
-        """Return the monthly charge"""
+        """Return the bill formula."""
         month_key = self.hass.data[DOMAIN][MONTH_KEY]
         if self._meter.bill_records is not None and month_key in self._meter.bill_records:
             return self._meter.bill_records[month_key].formula
-        return -1
+        return None
 
     @property
     def device_class(self):
@@ -433,29 +432,29 @@ class TaipowerMonthlyFormulaSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return f"{self._meter.number}_monthly_formula_sensor"
+        return f"{self._meter.number}_bill_formula_sensor"
     
     @property
     def state_class(self):
         return STATE_CLASS_MEASUREMENT
 
 
-class TaipowerMonthlyKwhSensorEntity(TaipowerEntity, SensorEntity):
+class TaipowerBillKwhSensorEntity(TaipowerEntity, SensorEntity):
     def __init__(self, meter, coordinator):
         super().__init__(meter, coordinator)
 
     @property
     def name(self):
         """Return the name of the entity."""
-        return f"{self._meter.name} {self._meter.number} Monthly Kw/h"
+        return f"{self._meter.name} {self._meter.number} Bill Kw/h"
 
     @property
     def state(self):
-        """Return the monthly KW/H"""
+        """Return the bill KW/H."""
         month_key = self.hass.data[DOMAIN][MONTH_KEY]
         if self._meter.bill_records is not None and month_key in self._meter.bill_records:
             return self._meter.bill_records[month_key].kwh
-        return -1
+        return None
 
     @property
     def device_class(self):
@@ -469,21 +468,21 @@ class TaipowerMonthlyKwhSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return f"{self._meter.number}_monthly_kwh_sensor"
+        return f"{self._meter.number}_bill_kwh_sensor"
     
     @property
     def state_class(self):
         return STATE_CLASS_MEASUREMENT
 
 
-class TaipowerMonthIndicatorSensorEntity(TaipowerEntity, SensorEntity):
+class TaipowerBillMonthIndicatorSensorEntity(TaipowerEntity, SensorEntity):
     def __init__(self, meter, coordinator):
         super().__init__(meter, coordinator)
 
     @property
     def name(self):
         """Return the name of the entity."""
-        return f"{self._meter.name} {self._meter.number} Month Indicator"
+        return f"{self._meter.name} {self._meter.number} Bill Month Indicator"
 
     @property
     def state(self):
@@ -508,4 +507,4 @@ class TaipowerMonthIndicatorSensorEntity(TaipowerEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return f"{self._meter.number}_month_indicator_sensor"
+        return f"{self._meter.number}_bill_month_indicator_sensor"

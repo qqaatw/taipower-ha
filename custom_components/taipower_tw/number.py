@@ -18,9 +18,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         async_add_entities(
             [
                 TaipowerAMISelectorNumberEntity(meter, coordinator),
-                TaipowerMonthlyDataSelectorNumberEntity(meter, coordinator)
+                TaipowerBillMonthSelectorNumberEntity(meter, coordinator)
             ],
-            update_before_add=True
         )
 
 
@@ -34,13 +33,12 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
         async_add_devices(
             [
                 TaipowerAMISelectorNumberEntity(meter, coordinator),
-                TaipowerMonthlyDataSelectorNumberEntity(meter, coordinator)
+                TaipowerBillMonthSelectorNumberEntity(meter, coordinator)
             ],
-            update_before_add=True
         )
 
 
-class TaipowerMonthlyDataSelectorNumberEntity(TaipowerEntity, NumberEntity):
+class TaipowerBillMonthSelectorNumberEntity(TaipowerEntity, NumberEntity):
     def __init__(self, meter, coordinator):
         super().__init__(meter, coordinator)
         self._value = 0
@@ -48,7 +46,7 @@ class TaipowerMonthlyDataSelectorNumberEntity(TaipowerEntity, NumberEntity):
     @property
     def name(self):
         """Return the name of the entity."""
-        return f"{self._meter.name} {self._meter.number} Month Selector"
+        return f"{self._meter.name} {self._meter.number} Bill Month Selector"
     
     @property
     def value(self):
@@ -67,7 +65,7 @@ class TaipowerMonthlyDataSelectorNumberEntity(TaipowerEntity, NumberEntity):
 
     @property
     def unique_id(self):
-        return f"{self._meter.number}_monthly_data_selector_number"
+        return f"{self._meter.number}_bill_month_selector_number"
 
     def set_value(self, value):
         """Set new month."""
