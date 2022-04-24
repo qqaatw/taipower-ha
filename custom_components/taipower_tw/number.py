@@ -3,7 +3,7 @@ import logging
 
 from homeassistant.components.number import NumberEntity
 
-from . import API, AMI_KEY, COORDINATOR, DOMAIN, TaipowerEntity, MONTH_KEY
+from . import AMI_KEY, API, COORDINATOR, DOMAIN, MONTH_KEY, TaipowerEntity
 
 _LOGGER = logging.getLogger(__name__)
 

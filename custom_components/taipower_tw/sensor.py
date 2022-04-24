@@ -7,7 +7,7 @@ from homeassistant.components.sensor import (STATE_CLASS_MEASUREMENT,
 from homeassistant.const import (DEVICE_CLASS_DATE, DEVICE_CLASS_ENERGY,
                                  DEVICE_CLASS_MONETARY, ENERGY_KILO_WATT_HOUR)
 
-from . import API, COORDINATOR, DOMAIN, TaipowerEntity, AMI_KEY, MONTH_KEY
+from . import AMI_KEY, API, COORDINATOR, DOMAIN, MONTH_KEY, TaipowerEntity
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,7 +1,6 @@
 """Taipower integration."""
-import asyncio
-import logging
 import functools
+import logging
 from dataclasses import dataclass, field
 from datetime import timedelta
 from typing import Optional
@@ -9,8 +8,7 @@ from typing import Optional
 import async_timeout
 from homeassistant.helpers import discovery
 from homeassistant.helpers.update_coordinator import (CoordinatorEntity,
-                                                      DataUpdateCoordinator,
-                                                      UpdateFailed)
+                                                      DataUpdateCoordinator)
 
 from .const import (AMI_KEY, API, CONF_ACCOUNT, CONF_AMI_PERIOD, CONF_DEVICES,
                     CONF_PASSWORD, CONF_RETRY, CONFIG_SCHEMA, COORDINATOR,
@@ -88,11 +86,9 @@ async def async_setup(hass, config):
             async with async_timeout.timeout(BASE_TIMEOUT + len(api.meters) * 2):
                 await hass.async_add_executor_job(functools.partial(api.refresh_status, refresh_ami_bill=False))
 
-        except asyncio.TimeoutError as err:
-            raise UpdateFailed(f"Command executed timed out when regularly fetching data.")
-
         except Exception as err:
-            raise UpdateFailed(f"Error communicating with API: {err}")
+            _LOGGER.error(err)
+            raise
         
         #_LOGGER.debug(
         #    f"Latest data: {[(name, value.status) for name, value in hass.data[DOMAIN][UPDATED_DATA].items()]}")
@@ -175,11 +171,9 @@ async def async_setup_entry(hass, config_entry):
             async with async_timeout.timeout(BASE_TIMEOUT + len(api.meters) * 2):
                 await hass.async_add_executor_job(functools.partial(api.refresh_status, refresh_ami_bill=False))
 
-        except asyncio.TimeoutError as err:
-            raise UpdateFailed(f"Command executed timed out when regularly fetching data.")
-
         except Exception as err:
-            raise UpdateFailed(f"Error communicating with API: {err}")
+            _LOGGER.error(err)
+            raise
 
     def _async_forward_entry_setup():
         for platform in PLATFORMS:
