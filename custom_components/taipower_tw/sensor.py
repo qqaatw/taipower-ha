@@ -29,6 +29,12 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                     TaipowerAMITotalKwhSensorEntity(meter, coordinator),
                     TaipowerAMIStartTimeIndicatorSensorEntity(meter, coordinator),
                     TaipowerAMIEndTimeIndicatorSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledChargeSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledDeadlineSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledKwhSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledReadingDateSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledLastReadingDateSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledNextReadingDateSensorEntity(meter, coordinator),
                     TaipowerBillChargePeriodSensorEntity(meter, coordinator),
                     TaipowerBillChargeSensorEntity(meter, coordinator),
                     TaipowerBillFormulaSensorEntity(meter, coordinator),
@@ -55,6 +61,12 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
                     TaipowerAMITotalKwhSensorEntity(meter, coordinator),
                     TaipowerAMIStartTimeIndicatorSensorEntity(meter, coordinator),
                     TaipowerAMIEndTimeIndicatorSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledChargeSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledDeadlineSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledKwhSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledReadingDateSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledLastReadingDateSensorEntity(meter, coordinator),
+                    TaipowerAMIUnbilledNextReadingDateSensorEntity(meter, coordinator),
                     TaipowerBillChargePeriodSensorEntity(meter, coordinator),
                     TaipowerBillChargeSensorEntity(meter, coordinator),
                     TaipowerBillFormulaSensorEntity(meter, coordinator),
@@ -71,7 +83,7 @@ class TaipowerAMIOffPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
     @property
     def available(self) -> bool:
         ami_key = self.hass.data[DOMAIN][AMI_KEY]
-        if ami_key in self._meter.ami and self._meter.ami[ami_key].is_missing_data:
+        if self._meter.ami is not None and ami_key in self._meter.ami and self._meter.ami[ami_key].is_missing_data:
             return False
         return True
 
@@ -114,7 +126,7 @@ class TaipowerAMIHalfPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
     @property
     def available(self) -> bool:
         ami_key = self.hass.data[DOMAIN][AMI_KEY]
-        if ami_key in self._meter.ami and self._meter.ami[ami_key].is_missing_data:
+        if self._meter.ami is not None and ami_key in self._meter.ami and self._meter.ami[ami_key].is_missing_data:
             return False
         return True
 
@@ -157,7 +169,7 @@ class TaipowerAMISatPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
     @property
     def available(self) -> bool:
         ami_key = self.hass.data[DOMAIN][AMI_KEY]
-        if ami_key in self._meter.ami and self._meter.ami[ami_key].is_missing_data:
+        if self._meter.ami is not None and ami_key in self._meter.ami and self._meter.ami[ami_key].is_missing_data:
             return False
         return True
 
@@ -200,7 +212,7 @@ class TaipowerAMIPeakKwhSensorEntity(TaipowerEntity, SensorEntity):
     @property
     def available(self) -> bool:
         ami_key = self.hass.data[DOMAIN][AMI_KEY]
-        if ami_key in self._meter.ami and self._meter.ami[ami_key].is_missing_data:
+        if self._meter.ami is not None and ami_key in self._meter.ami and self._meter.ami[ami_key].is_missing_data:
             return False
         return True
 
@@ -243,7 +255,7 @@ class TaipowerAMITotalKwhSensorEntity(TaipowerEntity, SensorEntity):
     @property
     def available(self) -> bool:
         ami_key = self.hass.data[DOMAIN][AMI_KEY]
-        if ami_key in self._meter.ami and self._meter.ami[ami_key].is_missing_data:
+        if self._meter.ami is not None and ami_key in self._meter.ami and self._meter.ami[ami_key].is_missing_data:
             return False
         return True
 
@@ -349,6 +361,227 @@ class TaipowerAMIEndTimeIndicatorSensorEntity(TaipowerEntity, SensorEntity):
     @property
     def unique_id(self):
         return f"{self._meter.number}_ami_end_time_indicator_sensor"
+
+
+class TaipowerAMIUnbilledChargeSensorEntity(TaipowerEntity, SensorEntity):
+    def __init__(self, meter, coordinator):
+        super().__init__(meter, coordinator)
+
+    @property
+    def name(self):
+        """Return the name of the entity."""
+        return f"{self._meter.name} {self._meter.number} AMI Unbilled Charge"
+
+    @property
+    def state(self):
+        """Return the ami unbilled charge."""
+        if self._meter.ami_unbilled is not None:
+            return self._meter.ami_unbilled.charge
+        return None
+
+    @property
+    def device_class(self):
+        """Return the device class."""
+        return DEVICE_CLASS_MONETARY
+
+    @property
+    def unique_id(self):
+        return f"{self._meter.number}_ami_unbilled_charge_sensor"
+    
+    @property
+    def state_class(self):
+        return STATE_CLASS_MEASUREMENT
+
+
+class TaipowerAMIUnbilledKwhSensorEntity(TaipowerEntity, SensorEntity):
+    def __init__(self, meter, coordinator):
+        super().__init__(meter, coordinator)
+
+    @property
+    def name(self):
+        """Return the name of the entity."""
+        return f"{self._meter.name} {self._meter.number} AMI Unbilled Kw/h"
+
+    @property
+    def state(self):
+        """Return the ami unbilled kw/h."""
+        if self._meter.ami_unbilled is not None:
+            return self._meter.ami_unbilled.kwh
+        return None
+
+    @property
+    def unit_of_measurement(self):
+        """Return the unit of measurement."""
+        return ENERGY_KILO_WATT_HOUR
+
+    @property
+    def device_class(self):
+        """Return the device class."""
+        return DEVICE_CLASS_ENERGY
+
+    @property
+    def unique_id(self):
+        return f"{self._meter.number}_ami_unbilled_kwh_sensor"
+    
+    @property
+    def state_class(self):
+        return STATE_CLASS_MEASUREMENT
+
+
+class TaipowerAMIUnbilledDeadlineSensorEntity(TaipowerEntity, SensorEntity):
+    def __init__(self, meter, coordinator):
+        super().__init__(meter, coordinator)
+
+    @property
+    def name(self):
+        """Return the name of the entity."""
+        return f"{self._meter.name} {self._meter.number} AMI Unbilled Deadline"
+
+    @property
+    def state(self):
+        """Return the date in yyyy-mm-dd format."""
+        value = self.native_value
+        if value is not None:
+            return self.native_value.strftime("%Y-%m-%d")
+        return None
+        
+    @property
+    def native_value(self):
+        """Return the date in datetime.date object."""
+        if self._meter.ami_unbilled is not None:
+            deadline = self._meter.ami_unbilled.deadline
+            return datetime.date(int(deadline[0:4]), int(deadline[4:6]), int(deadline[6:8]))
+        return None
+
+    @property
+    def device_class(self):
+        """Return the device class."""
+        return DEVICE_CLASS_DATE
+
+    @property
+    def unique_id(self):
+        return f"{self._meter.number}_ami_unbilled_deadline_sensor"
+    
+    @property
+    def state_class(self):
+        return STATE_CLASS_MEASUREMENT
+
+
+class TaipowerAMIUnbilledReadingDateSensorEntity(TaipowerEntity, SensorEntity):
+    def __init__(self, meter, coordinator):
+        super().__init__(meter, coordinator)
+
+    @property
+    def name(self):
+        """Return the name of the entity."""
+        return f"{self._meter.name} {self._meter.number} AMI Unbilled Reading Date"
+
+    @property
+    def state(self):
+        """Return the date in yyyy-mm-dd format."""
+        value = self.native_value
+        if value is not None:
+            return self.native_value.strftime("%Y-%m-%d")
+        return None
+        
+    @property
+    def native_value(self):
+        """Return the date in datetime.date object."""
+        if self._meter.ami_unbilled is not None:
+            reading_date = self._meter.ami_unbilled.reading_date
+            return datetime.date(int(reading_date[0:4]), int(reading_date[4:6]), int(reading_date[6:8]))
+        return None
+
+    @property
+    def device_class(self):
+        """Return the device class."""
+        return DEVICE_CLASS_DATE
+
+    @property
+    def unique_id(self):
+        return f"{self._meter.number}_ami_unbilled_reading_date_sensor"
+    
+    @property
+    def state_class(self):
+        return STATE_CLASS_MEASUREMENT
+
+
+class TaipowerAMIUnbilledLastReadingDateSensorEntity(TaipowerEntity, SensorEntity):
+    def __init__(self, meter, coordinator):
+        super().__init__(meter, coordinator)
+
+    @property
+    def name(self):
+        """Return the name of the entity."""
+        return f"{self._meter.name} {self._meter.number} AMI Unbilled Last Reading Date"
+
+    @property
+    def state(self):
+        """Return the date in yyyy-mm-dd format."""
+        value = self.native_value
+        if value is not None:
+            return self.native_value.strftime("%Y-%m-%d")
+        return None
+        
+    @property
+    def native_value(self):
+        """Return the date in datetime.date object."""
+        if self._meter.ami_unbilled is not None:
+            last_reading_date = self._meter.ami_unbilled.last_reading_date
+            return datetime.date(int(last_reading_date[0:4]), int(last_reading_date[4:6]), int(last_reading_date[6:8]))
+        return None
+
+    @property
+    def device_class(self):
+        """Return the device class."""
+        return DEVICE_CLASS_DATE
+
+    @property
+    def unique_id(self):
+        return f"{self._meter.number}_ami_unbilled_last_reading_date_sensor"
+    
+    @property
+    def state_class(self):
+        return STATE_CLASS_MEASUREMENT
+
+
+class TaipowerAMIUnbilledNextReadingDateSensorEntity(TaipowerEntity, SensorEntity):
+    def __init__(self, meter, coordinator):
+        super().__init__(meter, coordinator)
+
+    @property
+    def name(self):
+        """Return the name of the entity."""
+        return f"{self._meter.name} {self._meter.number} AMI Unbilled Next Reading Date"
+
+    @property
+    def state(self):
+        """Return the date in yyyy-mm-dd format."""
+        value = self.native_value
+        if value is not None:
+            return self.native_value.strftime("%Y-%m-%d")
+        return None
+        
+    @property
+    def native_value(self):
+        """Return the date in datetime.date object."""
+        if self._meter.ami_unbilled is not None:
+            next_reading_date = self._meter.ami_unbilled.next_reading_date
+            return datetime.date(int(next_reading_date[0:4]), int(next_reading_date[4:6]), int(next_reading_date[6:8]))
+        return None
+
+    @property
+    def device_class(self):
+        """Return the device class."""
+        return DEVICE_CLASS_DATE
+
+    @property
+    def unique_id(self):
+        return f"{self._meter.number}_ami_unbilled_next_reading_date_sensor"
+    
+    @property
+    def state_class(self):
+        return STATE_CLASS_MEASUREMENT
 
 
 class TaipowerBillChargePeriodSensorEntity(TaipowerEntity, SensorEntity):

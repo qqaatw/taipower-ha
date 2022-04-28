@@ -89,9 +89,6 @@ async def async_setup(hass, config):
         except Exception as err:
             _LOGGER.error(err)
             raise
-        
-        #_LOGGER.debug(
-        #    f"Latest data: {[(name, value.status) for name, value in hass.data[DOMAIN][UPDATED_DATA].items()]}")
 
     coordinator = DataUpdateCoordinator(
         hass,

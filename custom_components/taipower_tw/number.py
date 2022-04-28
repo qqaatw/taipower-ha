@@ -107,8 +107,11 @@ class TaipowerAMISelectorNumberEntity(TaipowerEntity, NumberEntity):
 
     def set_value(self, value):
         """Set new value."""
-        value = int(value)
-        _LOGGER.debug(f"Set {self.name} value to {value}")
-        self._value = value
-        self.hass.data[DOMAIN][AMI_KEY] = list(self._meter.ami.keys())[value]
-        self.update()
+        self._value = int(value)
+        
+        if self._meter.ami is not None:
+            _LOGGER.debug(f"Set {self.name} value to {self._value}")
+            self.hass.data[DOMAIN][AMI_KEY] = list(self._meter.ami.keys())[self._value]
+            self.update()
+        else:
+            _LOGGER.debug(f"{self.name} no AMI can be selected.")
